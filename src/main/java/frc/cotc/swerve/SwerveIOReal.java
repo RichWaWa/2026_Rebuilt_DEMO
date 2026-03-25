@@ -85,6 +85,7 @@ public class SwerveIOReal extends TunerConstants.TunerSwerveDrivetrain implement
       // Unlock
       queueLock.unlock();
     }
+    Robot.tracer.addEpoch("Swerve/periodic/updateInputs/swapQueues");
 
     // Grab queues of data needed for odometry
     inputs.poseQueue = new Pose2d[stateQueue.size()];
@@ -98,6 +99,7 @@ public class SwerveIOReal extends TunerConstants.TunerSwerveDrivetrain implement
       inputs.rawHeadingQueue[i] = state.RawHeading;
       inputs.timestampQueue[i] = state.Timestamp;
     }
+    Robot.tracer.addEpoch("Swerve/periodic/updateInputs/logQueue");
 
     if (stateQueue.size() != 0) {
       // Grab the newsest state
@@ -111,6 +113,7 @@ public class SwerveIOReal extends TunerConstants.TunerSwerveDrivetrain implement
 
       pose = state.Pose;
     }
+    Robot.tracer.addEpoch("Swerve/periodic/updateInputs/logLatest");
 
     stateQueue.clear();
 
@@ -124,6 +127,7 @@ public class SwerveIOReal extends TunerConstants.TunerSwerveDrivetrain implement
       inputs.steerSupplyCurrentAmps[i] = currentSignals[i * 4 + 3].getValueAsDouble();
     }
     inputs.timeOffsetSeconds = Utils.fpgaToCurrentTime(0);
+    Robot.tracer.addEpoch("Swerve/periodic/updateInputs/logConnected");
   }
 
   // updateOdometry is a noop in real/sim since we can use the real pose estimator directly

@@ -84,6 +84,8 @@ public class SOTM {
 
     var map = shotTarget.map;
 
+    Robot.tracer.addEpoch("SOTM/shooterPose");
+
     final int iterations = 5;
     var iterationsPoses = new Pose2d[iterations + 2];
     var iterationToFs = new double[iterations + 2];
@@ -121,6 +123,7 @@ public class SOTM {
       timeOfFlight -= error / error_prime;
       iterationToFs[i] = timeOfFlight;
     }
+    Robot.tracer.addEpoch("SOTM/iterate");
     var finalVirtualShooterPos =
         shooterTranslation.plus(
             new Translation2d(shooterVx * timeOfFlight, shooterVy * timeOfFlight));
@@ -133,19 +136,20 @@ public class SOTM {
     timeOfFlight = result.timeOfFlightSeconds();
     Logger.recordOutput("Shooter/Shot result/Iteration Poses", iterationsPoses);
     Logger.recordOutput("Shooter/Shot result/Iteration ToF seconds", iterationToFs);
+    Logger.recordOutput("Shooter/Shot result/Result", result);
+    Logger.recordOutput("Shooter/Shot result/Distance", finalVirtualShooterToTargetDistance);
+    Logger.recordOutput("Shooter/Shot result/Time of flight", timeOfFlight);
+    Logger.recordOutput(
+        "Shooter/Shot result/Final virtual shooter pose", iterationsPoses[iterations + 1]);
+    var turretYawAbsolute = finalVirtualShooterToTarget.getAngle();
+    Robot.tracer.addEpoch("SOTM/finalResult");
 
     var shotStability =
         Math.abs(
             (iterationToFs[iterations] - iterationToFs[iterations - 1])
                 / (iterationToFs[iterations - 1] - iterationToFs[iterations - 2]));
     Logger.recordOutput("Shooter/Shot result/Shot stability", shotStability);
-    Logger.recordOutput(
-        "Shooter/Shot result/Final virtual shooter pose", iterationsPoses[iterations + 1]);
-    Logger.recordOutput("Shooter/Shot result/Result", result);
-    Logger.recordOutput("Shooter/Shot result/Distance", finalVirtualShooterToTargetDistance);
-    Logger.recordOutput("Shooter/Shot result/Time of flight", timeOfFlight);
-
-    var turretYawAbsolute = finalVirtualShooterToTarget.getAngle();
+    Robot.tracer.addEpoch("SOTM/shotStability");
 
     if (Robot.isSimulation()) {
       Logger.recordOutput(
@@ -157,6 +161,7 @@ public class SOTM {
                       result.speedMetersPerSec(),
                       new Rotation3d(0, -result.pitchRad(), turretYawAbsolute.getRadians()))
                   .plus(new Translation3d(shooterVx, shooterVy, 0))));
+      Robot.tracer.addEpoch("SOTM/simulateTrajectory");
     }
     return new SOTMResult(
         result.pitchRad(),

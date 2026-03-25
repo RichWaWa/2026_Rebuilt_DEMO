@@ -11,6 +11,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.cotc.Robot;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -49,6 +50,7 @@ public class Shooter extends SubsystemBase {
     flywheelIO.updateInputs(flywheelInputs);
     Logger.processInputs("Shooter/Flywheel", flywheelInputs);
     Logger.recordOutput("Shooter/Target flywheel speed rot per sec", targetSpeedRotPerSec);
+    Robot.tracer.addEpoch("Shooter/periodic");
   }
 
   private final double baseTargetSpeedRotPerSec = 36;

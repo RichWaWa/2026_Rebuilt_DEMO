@@ -9,6 +9,7 @@ package frc.cotc.feeder;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.cotc.Robot;
 import org.littletonrobotics.junction.Logger;
 
 public class Raceway extends SubsystemBase {
@@ -23,6 +24,7 @@ public class Raceway extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Raceway", inputs);
+    Robot.tracer.addEpoch("Raceway/periodic");
   }
 
   public Command runRaceway() {

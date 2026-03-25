@@ -112,11 +112,13 @@ public class Swerve extends SubsystemBase {
     // Update and process inputs
     io.updateInputs(inputs);
     Logger.processInputs("Swerve", inputs);
+    Robot.tracer.addEpoch("Swerve/periodic/updateInputs/process");
     // Update odometry using those inputs
     io.updateOdometry(inputs);
 
     if (Robot.mode == Robot.Mode.SIM) {
       AprilTagPoseEstimatorIOPhoton.updateSim();
+      Robot.tracer.addEpoch("Swerve/periodic/updatePhotonSim");
     }
     for (var camera : cameras) {
       camera.addPoseData(Timer.getTimestamp(), getPose());
@@ -128,12 +130,15 @@ public class Swerve extends SubsystemBase {
     }
     Logger.recordOutput("Swerve/Vision Poses", visionPoses.toArray(new Pose2d[0]));
     visionPoses.clear();
+    Robot.tracer.addEpoch("Swerve/periodic/updateCameras");
 
     for (int i = 0; i < 4; i++) {
       deviceDisconnectAlerts[i * 3].set(!inputs.driveMotorConnected[i]);
       deviceDisconnectAlerts[i * 3 + 1].set(!inputs.steerMotorConnected[i]);
       deviceDisconnectAlerts[i * 3 + 2].set(!inputs.encoderConnected[i]);
     }
+
+    Robot.tracer.addEpoch("Swerve/periodic/updateDisconnectAlerts");
 
     Logger.recordOutput("Swerve/Pose", io.getPose());
   }
