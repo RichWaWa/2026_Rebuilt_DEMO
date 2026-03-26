@@ -35,6 +35,7 @@ public class Shooter extends SubsystemBase {
     addMapping(40.8, 7.67);
     addMapping(42, 8.019);
     addMapping(43.8, 8.377);
+    addMapping(75.91, 14.5); // Extrapolated
   }
 
   private void addMapping(double flywheelSpeedRotPerSec, double projectileSpeedMetersPerSec) {
