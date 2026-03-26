@@ -427,24 +427,25 @@ public class Robot extends LoggedRobot {
     SmartDashboard.putData(CommandScheduler.getInstance());
     tracer.addEpoch("robotPeriodic/misc");
 
-    try {
-      lastEpochsPrintTime.set(tracer, 0L);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
-    tracer.printEpochs(
-        (output) -> {
-          String[] lines = output.split("\\R");
-          for (var line : lines) {
-            if (line.isEmpty()) {
-              continue;
-            }
-            String[] parts = line.split(": ");
-            var key = parts[0].replace("\t", "");
-            var value = parts[1].replace("s", "");
-            Logger.recordOutput("LoggedRobot/Timings/" + key, Double.parseDouble(value), "seconds");
-          }
-        });
+    // try {
+    //   lastEpochsPrintTime.set(tracer, 0L);
+    // } catch (IllegalAccessException e) {
+    //   throw new RuntimeException(e);
+    // }
+    // tracer.printEpochs(
+    //     (output) -> {
+    //       String[] lines = output.split("\\R");
+    //       for (var line : lines) {
+    //         if (line.isEmpty()) {
+    //           continue;
+    //         }
+    //         String[] parts = line.split(": ");
+    //         var key = parts[0].replace("\t", "");
+    //         var value = parts[1].replace("s", "");
+    //         Logger.recordOutput("LoggedRobot/Timings/" + key, Double.parseDouble(value),
+    // "seconds");
+    //       }
+    //     });
   }
 
   private void updateTarget() {
