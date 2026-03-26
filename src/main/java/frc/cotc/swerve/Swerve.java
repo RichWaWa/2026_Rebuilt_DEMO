@@ -188,7 +188,7 @@ public class Swerve extends SubsystemBase {
 
   private final SwerveRequest.FieldCentricFacingAngle fieldCentricFacingAngle =
       new SwerveRequest.FieldCentricFacingAngle()
-          .withHeadingPID(8, 0, 0)
+          .withHeadingPID(4, 0, 0.5)
           .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
 
   private Rotation2d lastHeading = Rotation2d.kZero;

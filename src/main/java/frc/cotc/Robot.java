@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -342,6 +343,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
+    Threads.setCurrentThreadPriority(true, 1);
+
     canivoreSignals.refreshAll();
     rioSignals.refreshAll();
     updateTarget();
@@ -392,6 +395,8 @@ public class Robot extends LoggedRobot {
       Logger.recordOutput("Swerve/Ground Truth Pose", groundTruthPoseSupplier.get());
     }
     SmartDashboard.putData(CommandScheduler.getInstance());
+
+    Threads.setCurrentThreadPriority(false, 1);
   }
 
   private void updateTarget() {

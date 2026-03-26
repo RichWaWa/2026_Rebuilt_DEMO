@@ -49,12 +49,14 @@ public class Shooter extends SubsystemBase {
     flywheelIO.updateInputs(flywheelInputs);
     Logger.processInputs("Shooter/Flywheel", flywheelInputs);
     Logger.recordOutput("Shooter/Target flywheel speed rot per sec", targetSpeedRotPerSec);
+    Logger.recordOutput("Shooter/Target hood pitch rad", targetPitchRad);
   }
 
   private final double baseTargetSpeedRotPerSec = 40;
   private double targetSpeedRotPerSec = baseTargetSpeedRotPerSec;
 
-  private final double presetAngle = Units.degreesToRadians(60); // placeholder
+  private final double presetAngle = Units.degreesToRadians(60);
+  private double targetPitchRad = presetAngle;
 
   public Command idleRun() {
     return run(
@@ -62,6 +64,7 @@ public class Shooter extends SubsystemBase {
           targetSpeedRotPerSec = baseTargetSpeedRotPerSec;
           flywheelIO.runVel(baseTargetSpeedRotPerSec);
           hoodIO.runPitch(presetAngle);
+          targetPitchRad = presetAngle;
         });
   }
 
@@ -85,6 +88,7 @@ public class Shooter extends SubsystemBase {
         () -> {
           if (sotmResult == null) return;
           hoodIO.runPitch(sotmResult.pitchRad());
+          targetPitchRad = sotmResult.pitchRad();
           targetSpeedRotPerSec =
               projectileSpeedToFlywheelSpeedMap.get(sotmResult.shotSpeedMetersPerSecond());
           flywheelIO.runVel(targetSpeedRotPerSec);
