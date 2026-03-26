@@ -18,13 +18,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.cotc.autos.Autos;
@@ -143,7 +141,7 @@ public class Robot extends LoggedRobot {
             new AprilTagPoseEstimator("Left"),
             new AprilTagPoseEstimator("Back"),
             new AprilTagPoseEstimator("Right"));
-    var primary = new CommandXboxController(0);
+    var primary = new CommandXboxControllerWithRumble(0);
 
     var intakeRoller =
         new IntakeRoller(
@@ -316,18 +314,18 @@ public class Robot extends LoggedRobot {
                     raceway.idle(),
                     turretFeeder.idle(),
                     swerve.fastTeleopDrive())
-                .withName("Boost"));
+                .withName("Boost"))
+        .onTrue(
+            sequence(
+                primary.rumble(0.2),
+                waitSeconds(0.1),
+                primary.rumble(0.2),
+                waitSeconds(0.1),
+                primary.rumble(0.2)));
 
     new Trigger(() -> shiftInfo != null && shiftInfo.remainingTime() < 5)
-        .onTrue(
-            run(() -> primary.setRumble(GenericHID.RumbleType.kBothRumble, 1))
-                .withTimeout(0.25)
-                .finallyDo(() -> primary.setRumble(GenericHID.RumbleType.kBothRumble, 0)));
-    new Trigger(() -> shiftInfo != null && shiftInfo.active())
-        .onChange(
-            run(() -> primary.setRumble(GenericHID.RumbleType.kBothRumble, 1))
-                .withTimeout(0.5)
-                .finallyDo(() -> primary.setRumble(GenericHID.RumbleType.kBothRumble, 0)));
+        .onTrue(primary.rumble(0.25));
+    new Trigger(() -> shiftInfo != null && shiftInfo.active()).onChange(primary.rumble(0.5));
   }
 
   @Override
