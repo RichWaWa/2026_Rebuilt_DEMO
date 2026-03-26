@@ -345,8 +345,10 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     Threads.setCurrentThreadPriority(true, 1);
 
-    canivoreSignals.refreshAll();
-    rioSignals.refreshAll();
+    if (mode != Mode.REPLAY) {
+      canivoreSignals.refreshAll();
+      rioSignals.refreshAll();
+    }
     updateTarget();
     var fieldChassisSpeeds = swerve.getFieldSpeeds();
     var result =

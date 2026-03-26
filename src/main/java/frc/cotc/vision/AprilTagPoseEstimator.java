@@ -50,7 +50,7 @@ public class AprilTagPoseEstimator {
                 Units.inchesToMeters(-11 + 2.4375),
                 Units.inchesToMeters(16 - 1.3125),
                 Units.inchesToMeters(28.25),
-                new Rotation3d(0, Units.degreesToRadians(-15), 0)),
+                new Rotation3d(0, Units.degreesToRadians(-14), 0)),
             MatBuilder.fill(
                 Nat.N3(),
                 Nat.N3(),
@@ -146,9 +146,9 @@ public class AprilTagPoseEstimator {
             new Transform3d(
                 Units.inchesToMeters(-11 + 1.625),
                 Units.inchesToMeters(-16 + 2.875),
-                Units.inchesToMeters(28.25),
+                Units.inchesToMeters(28.25) + .02,
                 new Rotation3d(
-                    Units.degreesToRadians(5), Units.degreesToRadians(-15), Math.PI / 2)),
+                    Units.degreesToRadians(4), Units.degreesToRadians(-10.5), Math.PI / 2)),
             MatBuilder.fill(
                 Nat.N3(),
                 Nat.N3(),
@@ -267,7 +267,7 @@ public class AprilTagPoseEstimator {
                 for (var tag : poseEstimate.targetsUsed) {
                   var tagDistance = tag.bestCameraToTarget.getTranslation().getNorm();
 
-                  translationalScoresSum += .3 * Math.pow(tagDistance, 1.5);
+                  translationalScoresSum += .4 * Math.pow(tagDistance, 1.5);
                   angularScoresSum += .6 * Math.pow(tagDistance, 2);
                 }
 
