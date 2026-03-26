@@ -23,7 +23,9 @@ public class SOTM {
   private static final double DRAG_CONSTANT_INVERSE_SECONDS = 0.1;
 
   // Location that the robot should shoot at for passing balls
-  private static final Translation2d BLUE_BOTTOM_GROUND_TARGET = new Translation2d(1, 1);
+  private static final Translation2d BLUE_BOTTOM_GROUND_TARGET =
+      new Translation2d(
+          FieldConstants.LinesVertical.starting - 1, FieldConstants.Hub.nearRightCorner.getY() / 2);
   private static final Translation2d BLUE_TOP_GROUND_TARGET =
       new Translation2d(
           BLUE_BOTTOM_GROUND_TARGET.getX(),
