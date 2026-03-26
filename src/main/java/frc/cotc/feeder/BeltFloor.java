@@ -13,7 +13,6 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.cotc.Robot;
 import org.littletonrobotics.junction.Logger;
 
 public class BeltFloor extends SubsystemBase {
@@ -33,7 +32,6 @@ public class BeltFloor extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("BeltFloor", inputs);
-    Robot.tracer.addEpoch("BeltFloor/periodic");
   }
 
   public Command runIntermittenly() {

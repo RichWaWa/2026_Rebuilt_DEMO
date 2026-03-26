@@ -17,7 +17,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -36,7 +39,6 @@ import frc.cotc.shooter.*;
 import frc.cotc.swerve.*;
 import frc.cotc.vision.AprilTagPoseEstimator;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Field;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -70,9 +72,6 @@ public class Robot extends LoggedRobot {
   private boolean isOkayToShoot = true;
 
   private Shifts.ShiftInfo shiftInfo;
-
-  public static final Tracer tracer = new Tracer();
-  private final Field lastEpochsPrintTime;
 
   @SuppressWarnings({"UnreachableCode", "ConstantValue"})
   public Robot(boolean isReplay) {
@@ -128,13 +127,6 @@ public class Robot extends LoggedRobot {
     RobotController.setBrownoutVoltage(6);
 
     Logger.start();
-
-    try {
-      lastEpochsPrintTime = Tracer.class.getDeclaredField("m_lastEpochsPrintTime");
-      lastEpochsPrintTime.setAccessible(true);
-    } catch (NoSuchFieldException e) {
-      throw new RuntimeException(e);
-    }
 
     CommandScheduler.getInstance().onCommandInitialize(CommandsLogging::commandStarted);
     CommandScheduler.getInstance().onCommandFinish(CommandsLogging::commandEnded);
@@ -340,24 +332,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
-    tracer.resetTimer();
     autos.update();
-    tracer.addEpoch("Update Choreo");
-  }
-
-  @Override
-  public void autonomousPeriodic() {
-    tracer.resetTimer();
-  }
-
-  @Override
-  public void teleopPeriodic() {
-    tracer.resetTimer();
-  }
-
-  @Override
-  public void testPeriodic() {
-    tracer.resetTimer();
   }
 
   // The shooter will lag behind the target position, so try to look a little further into the
@@ -370,9 +345,7 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     canivoreSignals.refreshAll();
     rioSignals.refreshAll();
-    tracer.addEpoch("robotPeriodic/refreshAll");
     updateTarget();
-    tracer.addEpoch("robotPeriodic/updateTarget");
     var fieldChassisSpeeds = swerve.getFieldSpeeds();
     var result =
         SOTM.calculate(
@@ -389,13 +362,11 @@ public class Robot extends LoggedRobot {
     Logger.recordOutput("Shooter/Target", new Pose2d(shotTarget.targetLocation, Rotation2d.kZero));
     swerve.setSOTMResult(result);
     shooter.setSOTMResult(result);
-    tracer.addEpoch("robotPeriodic/setSOTMResult");
     shiftInfo = Shifts.getOfficialShiftInfo();
     Logger.recordOutput("ShiftInfo/CurrentShift", shiftInfo.currentShift());
     Logger.recordOutput("ShiftInfo/Active", shiftInfo.active());
     Logger.recordOutput("ShiftInfo/ElapsedTime", shiftInfo.elapsedTime());
     Logger.recordOutput("ShiftInfo/RemainingTime", shiftInfo.remainingTime());
-    tracer.addEpoch("robotPeriodic/shiftInfo");
     var timeOfFlight =
         (shotTarget == SOTM.ShotTarget.BLUE_HUB || shotTarget == SOTM.ShotTarget.RED_HUB)
             ? result.timeOfFlightSeconds()
@@ -407,16 +378,13 @@ public class Robot extends LoggedRobot {
         adjustedShiftInfo.active()
             && (shotTarget == SOTM.ShotTarget.BLUE_HUB || shotTarget == SOTM.ShotTarget.RED_HUB));
     isOkayToShoot = adjustedShiftInfo.active();
-    tracer.addEpoch("robotPeriodic/shiftInfoAdjusted");
     // Runs the Scheduler. This is responsible for polling buttons, adding newly-scheduled commands,
     // running already-scheduled commands, removing finished or interrupted commands, and running
     // subsystem periodic() methods. This must be called from the robot's periodic block in order
     // for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    tracer.addEpoch("robotPeriodic/commandsExecute");
     CommandsLogging.logRunningCommands();
     CommandsLogging.logRequiredSubsystems();
-    tracer.addEpoch("robotPeriodic/commandLogging");
     Logger.recordOutput(
         "LoggedRobot/MemoryUsageMB",
         (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1e6);
@@ -425,27 +393,8 @@ public class Robot extends LoggedRobot {
       Logger.recordOutput("Swerve/Ground Truth Pose", groundTruthPoseSupplier.get());
     }
     SmartDashboard.putData(CommandScheduler.getInstance());
-    tracer.addEpoch("robotPeriodic/misc");
 
-    // try {
-    //   lastEpochsPrintTime.set(tracer, 0L);
-    // } catch (IllegalAccessException e) {
-    //   throw new RuntimeException(e);
-    // }
-    // tracer.printEpochs(
-    //     (output) -> {
-    //       String[] lines = output.split("\\R");
-    //       for (var line : lines) {
-    //         if (line.isEmpty()) {
-    //           continue;
-    //         }
-    //         String[] parts = line.split(": ");
-    //         var key = parts[0].replace("\t", "");
-    //         var value = parts[1].replace("s", "");
-    //         Logger.recordOutput("LoggedRobot/Timings/" + key, Double.parseDouble(value),
-    // "seconds");
-    //       }
-    //     });
+    Threads.setCurrentThreadPriority(false, 10);
   }
 
   private void updateTarget() {

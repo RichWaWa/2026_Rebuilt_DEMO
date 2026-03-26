@@ -13,7 +13,6 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.cotc.Robot;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakePivot extends SubsystemBase {
@@ -38,7 +37,6 @@ public class IntakePivot extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("IntakePivot", inputs);
     Logger.recordOutput("IntakePivot/TargetAngleRad", targetAngleRad);
-    Robot.tracer.addEpoch("IntakePivot/periodic");
   }
 
   private Command goToPos(double posRad) {

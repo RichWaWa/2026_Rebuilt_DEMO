@@ -9,7 +9,6 @@ package frc.cotc.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.cotc.Robot;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeRoller extends SubsystemBase {
@@ -24,7 +23,6 @@ public class IntakeRoller extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs); // 1, Get new data from hardware
     Logger.processInputs("IntakeRoller", inputs);
-    Robot.tracer.addEpoch("IntakeRoller/periodic");
   }
 
   public Command intake() {
