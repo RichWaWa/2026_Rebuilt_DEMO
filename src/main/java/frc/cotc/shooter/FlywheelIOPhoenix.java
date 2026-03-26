@@ -73,7 +73,7 @@ public class FlywheelIOPhoenix implements FlywheelIO {
         motor0SupplyCurrent,
         motor1SupplyCurrent);
 
-    ParentDevice.optimizeBusUtilizationForAll();
+    ParentDevice.optimizeBusUtilizationForAll(5, motor0, motor1);
   }
 
   @Override

@@ -33,6 +33,7 @@ public class RacewayIOPhoenix implements RacewayIO {
     supplySignal = motor.getSupplyCurrent(false);
     BaseStatusSignal.setUpdateFrequencyForAll(50, statorSignal, supplySignal);
     Robot.rioSignals.addSignals(statorSignal, supplySignal);
+    motor.optimizeBusUtilization(5);
   }
 
   @Override

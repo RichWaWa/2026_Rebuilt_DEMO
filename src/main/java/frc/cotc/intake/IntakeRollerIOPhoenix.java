@@ -33,6 +33,7 @@ public class IntakeRollerIOPhoenix implements IntakeRollerIO {
     supplySignal = intakeMotor.getSupplyCurrent(false);
     BaseStatusSignal.setUpdateFrequencyForAll(50, statorSignal, supplySignal);
     Robot.rioSignals.addSignals(statorSignal, supplySignal);
+    intakeMotor.optimizeBusUtilization(5);
   }
 
   @Override

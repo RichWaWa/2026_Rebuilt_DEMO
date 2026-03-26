@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.encoder.SplineEncoder;
+import com.revrobotics.encoder.config.DetachedEncoderConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.cotc.Robot;
@@ -41,6 +42,8 @@ public class IntakePivotIOPhoenix implements IntakePivotIO {
     velocitySignal = motor.getVelocity(false);
 
     BaseStatusSignal.setUpdateFrequencyForAll(50, statorSignal, supplySignal, velocitySignal);
+
+    motor.optimizeBusUtilization(5);
 
     Robot.rioSignals.addSignals(statorSignal, supplySignal, velocitySignal);
   }

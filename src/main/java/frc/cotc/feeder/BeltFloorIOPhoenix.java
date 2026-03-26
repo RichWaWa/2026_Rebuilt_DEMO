@@ -33,6 +33,7 @@ public class BeltFloorIOPhoenix implements BeltFloorIO {
     motorVelocitySignal = motor.getVelocity(false);
     BaseStatusSignal.setUpdateFrequencyForAll(50, statorSignal, supplySignal, motorVelocitySignal);
     Robot.rioSignals.addSignals(statorSignal, supplySignal, motorVelocitySignal);
+    motor.optimizeBusUtilization(5);
   }
 
   @Override
