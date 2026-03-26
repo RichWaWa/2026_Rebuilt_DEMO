@@ -25,7 +25,7 @@ from sleipnir.optimization import ExitStatus, Problem
 
 # Physical characteristics
 shooter_height = 18 * 0.0254  # m
-min_pitch = np.deg2rad(50)  # rad
+min_pitch = np.deg2rad(55)  # rad
 max_pitch = np.deg2rad(60)  # rad
 g = np.array([[0], [0], [9.81]])  # m/s²
 max_shooter_velocity = 14.5  # m/s
