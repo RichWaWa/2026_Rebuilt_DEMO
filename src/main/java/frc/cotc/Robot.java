@@ -368,8 +368,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
-    Threads.setCurrentThreadPriority(true, 1);
-
     canivoreSignals.refreshAll();
     rioSignals.refreshAll();
     tracer.addEpoch("robotPeriodic/refreshAll");
@@ -447,8 +445,6 @@ public class Robot extends LoggedRobot {
             Logger.recordOutput("LoggedRobot/Timings/" + key, Double.parseDouble(value), "seconds");
           }
         });
-
-    Threads.setCurrentThreadPriority(false, 10);
   }
 
   private void updateTarget() {

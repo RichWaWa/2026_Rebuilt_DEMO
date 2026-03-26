@@ -53,7 +53,7 @@ public class Shooter extends SubsystemBase {
     Robot.tracer.addEpoch("Shooter/periodic");
   }
 
-  private final double baseTargetSpeedRotPerSec = 36;
+  private final double baseTargetSpeedRotPerSec = 40;
   private double targetSpeedRotPerSec = baseTargetSpeedRotPerSec;
 
   private final double presetAngle = Units.degreesToRadians(60); // placeholder
