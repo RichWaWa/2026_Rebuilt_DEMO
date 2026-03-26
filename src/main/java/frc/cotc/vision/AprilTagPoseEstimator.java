@@ -82,7 +82,9 @@ public class AprilTagPoseEstimator {
                 Units.inchesToMeters(16 - 2.875),
                 Units.inchesToMeters(28.25),
                 new Rotation3d(
-                    Units.degreesToRadians(5), Units.degreesToRadians(-15), -Math.PI / 2)),
+                    Units.degreesToRadians(5),
+                    Units.degreesToRadians(-15),
+                    -Math.PI / 2 + Units.degreesToRadians(4))),
             MatBuilder.fill(
                 Nat.N3(),
                 Nat.N3(),
@@ -113,7 +115,8 @@ public class AprilTagPoseEstimator {
                 Units.inchesToMeters(-11 + 0.75),
                 Units.inchesToMeters(-16 + 1.25),
                 Units.inchesToMeters(28.25),
-                new Rotation3d(0, Units.degreesToRadians(-15), Math.PI)),
+                new Rotation3d(
+                    0, Units.degreesToRadians(-15), Math.PI + Units.degreesToRadians(4))),
             MatBuilder.fill(
                 Nat.N3(),
                 Nat.N3(),
@@ -264,11 +267,11 @@ public class AprilTagPoseEstimator {
                 for (var tag : poseEstimate.targetsUsed) {
                   var tagDistance = tag.bestCameraToTarget.getTranslation().getNorm();
 
-                  translationalScoresSum += .4 * Math.pow(tagDistance, 2.5);
-                  angularScoresSum += .3 * Math.pow(tagDistance, 2.5);
+                  translationalScoresSum += .3 * Math.pow(tagDistance, 1.5);
+                  angularScoresSum += .6 * Math.pow(tagDistance, 2);
                 }
 
-                var translationalDivisor = Math.pow(poseEstimate.targetsUsed.size(), 1.5);
+                var translationalDivisor = Math.pow(poseEstimate.targetsUsed.size(), 2);
                 var angularDivisor = Math.pow(poseEstimate.targetsUsed.size(), 1.5);
 
                 estimateConsumer.accept(

@@ -215,8 +215,7 @@ public class Swerve extends SubsystemBase {
               fieldCentricFacingAngle
                   .withVelocityX(x * maxLinearSpeedMetersPerSecond)
                   .withVelocityY(y * maxLinearSpeedMetersPerSecond)
-                  .withTargetDirection(heading)
-                  .withMaxAbsRotationalRate(maxAngularSpeedRadiansPerSecond / 2));
+                  .withTargetDirection(heading));
         });
   }
 
