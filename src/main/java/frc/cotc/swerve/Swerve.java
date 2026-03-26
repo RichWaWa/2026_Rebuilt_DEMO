@@ -324,6 +324,25 @@ public class Swerve extends SubsystemBase {
             .withWheelForceFeedforwardsY(sample.moduleForcesY()));
   }
 
+  public Command pidToPose(Pose2d targetPose) {
+    return run(
+        () -> {
+          var currentPose = getPose();
+
+          io.setControl(
+              m_pathApplyFieldSpeeds
+                  .withSpeeds(
+                      new ChassisSpeeds(
+                          pathXController.calculate(currentPose.getX(), targetPose.getX()),
+                          pathYController.calculate(currentPose.getY(), targetPose.getY()),
+                          pathThetaController.calculate(
+                              currentPose.getRotation().getRadians(),
+                              targetPose.getRotation().getRadians())))
+                  .withWheelForceFeedforwardsX(new double[4])
+                  .withWheelForceFeedforwardsY(new double[4]));
+        });
+  }
+
   public Pose2d getPose() {
     return io.getPose();
   }

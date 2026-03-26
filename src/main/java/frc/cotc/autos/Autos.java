@@ -31,12 +31,15 @@ public class Autos {
 
   private final Supplier<Command> shootCommand, feedCommand, intakeCommand, aimCommand, stopCommand;
 
+  private final Swerve swerve;
+
   public Autos(
       Swerve swerve, Shooter shooter, Supplier<Command> feedCommand, IntakeRoller intakeRoller) {
     chooser = new LoggedDashboardChooser<>("Auto Chooser");
     chooser.addDefaultOption(NONE_NAME, NONE_NAME);
     routines.put(NONE_NAME, Commands::none);
 
+    this.swerve = swerve;
     shootCommand = shooter::sotm;
     this.feedCommand = feedCommand;
     intakeCommand = intakeRoller::intake;
@@ -163,7 +166,7 @@ public class Autos {
             sequence(
                 trajectory0.resetOdometry(),
                 trajectory0.cmd(),
-                stopCommand.get().withTimeout(3),
+                swerve.pidToPose(trajectory0.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory1.cmd(),
                 parallel(
                     aimCommand.get(),
@@ -209,7 +212,7 @@ public class Autos {
             sequence(
                 trajectory0.resetOdometry(),
                 trajectory0.cmd(),
-                stopCommand.get().withTimeout(3),
+                swerve.pidToPose(trajectory0.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory1.cmd(),
                 parallel(
                         aimCommand.get(),
@@ -274,7 +277,7 @@ public class Autos {
             sequence(
                 trajectory0.resetOdometry(),
                 trajectory0.cmd(),
-                stopCommand.get().withTimeout(3),
+                swerve.pidToPose(trajectory0.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory1.cmd(),
                 parallel(
                         aimCommand.get(),
@@ -339,7 +342,7 @@ public class Autos {
             sequence(
                 trajectory0.resetOdometry(),
                 trajectory0.cmd(),
-                stopCommand.get().withTimeout(3),
+                swerve.pidToPose(trajectory0.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory1.cmd(),
                 parallel(
                         aimCommand.get(),
@@ -401,7 +404,7 @@ public class Autos {
             sequence(
                 trajectory0.resetOdometry(),
                 trajectory0.cmd(),
-                stopCommand.get().withTimeout(3),
+                swerve.pidToPose(trajectory0.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory1.cmd(),
                 parallel(
                     aimCommand.get(),
@@ -447,7 +450,7 @@ public class Autos {
             sequence(
                 trajectory0.resetOdometry(),
                 trajectory0.cmd(),
-                stopCommand.get().withTimeout(3),
+                swerve.pidToPose(trajectory0.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory1.cmd(),
                 parallel(
                         aimCommand.get(),
@@ -512,7 +515,7 @@ public class Autos {
             sequence(
                 trajectory0.resetOdometry(),
                 trajectory0.cmd(),
-                stopCommand.get().withTimeout(3),
+                swerve.pidToPose(trajectory0.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory1.cmd(),
                 parallel(
                         aimCommand.get(),
@@ -577,7 +580,7 @@ public class Autos {
             sequence(
                 trajectory0.resetOdometry(),
                 trajectory0.cmd(),
-                stopCommand.get().withTimeout(3),
+                swerve.pidToPose(trajectory0.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory1.cmd(),
                 parallel(
                         aimCommand.get(),
@@ -694,7 +697,7 @@ public class Autos {
                         waitSeconds(1).andThen(feedCommand.get()))
                     .withTimeout(5),
                 trajectory3.cmd(),
-                stopCommand.get().withTimeout(3),
+                swerve.pidToPose(trajectory3.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory4.cmd(),
                 parallel(
                     aimCommand.get(),
@@ -803,7 +806,7 @@ public class Autos {
                         waitSeconds(1).andThen(feedCommand.get()))
                     .withTimeout(5),
                 trajectory3.cmd(),
-                stopCommand.get().withTimeout(3),
+                swerve.pidToPose(trajectory3.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory4.cmd(),
                 parallel(
                     aimCommand.get(),
@@ -1187,7 +1190,7 @@ public class Autos {
                         waitSeconds(1).andThen(feedCommand.get()))
                     .withTimeout(5),
                 trajectory3.cmd(),
-                stopCommand.get().withTimeout(3),
+                swerve.pidToPose(trajectory3.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory4.cmd(),
                 parallel(
                     aimCommand.get(),

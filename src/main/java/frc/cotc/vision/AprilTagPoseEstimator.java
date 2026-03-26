@@ -264,8 +264,8 @@ public class AprilTagPoseEstimator {
                 for (var tag : poseEstimate.targetsUsed) {
                   var tagDistance = tag.bestCameraToTarget.getTranslation().getNorm();
 
-                  translationalScoresSum += .9 * Math.pow(tagDistance, 2.5);
-                  angularScoresSum += .6 * Math.pow(tagDistance, 2.5);
+                  translationalScoresSum += .4 * Math.pow(tagDistance, 2.5);
+                  angularScoresSum += .3 * Math.pow(tagDistance, 2.5);
                 }
 
                 var translationalDivisor = Math.pow(poseEstimate.targetsUsed.size(), 1.5);
