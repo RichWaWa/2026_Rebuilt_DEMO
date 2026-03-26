@@ -235,9 +235,7 @@ public class AprilTagPoseEstimator {
 
   public void update(VisionEstimateConsumer estimateConsumer) {
     io.updateInputs(inputs);
-    Robot.tracer.addEpoch("AprilTags/" + name + "/updateInputs");
     Logger.processInputs("AprilTags/" + name, inputs);
-    Robot.tracer.addEpoch("AprilTags/" + name + "/process");
 
     var acceptedPoses = new ArrayList<Pose3d>();
     var rejectedPoses = new ArrayList<Pose3d>();
@@ -285,7 +283,6 @@ public class AprilTagPoseEstimator {
                             : angularScoresSum / angularDivisor));
               });
     }
-    Robot.tracer.addEpoch("AprilTags/" + name + "/filter");
 
     Logger.recordOutput("Vision/" + name + "/Rejected poses", rejectedPoses.toArray(new Pose3d[0]));
     Logger.recordOutput("Vision/" + name + "/Accepted poses", acceptedPoses.toArray(new Pose3d[0]));
