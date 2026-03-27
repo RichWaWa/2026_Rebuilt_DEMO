@@ -211,6 +211,7 @@ public class Robot extends LoggedRobot {
                         intakePivot.agitate().asProxy(),
                         intakeRoller.intake())
                     .withName("Feed"),
+            intakePivot,
             intakeRoller);
     CommandScheduler.getInstance().schedule(autos.warmup());
 
