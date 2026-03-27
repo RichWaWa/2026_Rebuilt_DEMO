@@ -23,7 +23,7 @@ public class IntakePivot extends SubsystemBase {
   private static final double AGITATE_ANGLE = 1.5;
   private static final double RETRACTED_ANGLE = 2.274;
 
-  private final PIDController pidController = new PIDController(7.5, 0.0, 0.025);
+  private final PIDController pidController = new PIDController(5, 0.0, 0.025);
   private final ArmFeedforward feedforward = new ArmFeedforward(0.158, 0.242, 0.0);
 
   private double targetAngleRad = EXTENDED_ANGLE;
