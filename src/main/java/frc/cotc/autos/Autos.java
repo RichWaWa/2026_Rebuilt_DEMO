@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.cotc.Robot;
+import frc.cotc.intake.IntakePivot;
 import frc.cotc.intake.IntakeRoller;
 import frc.cotc.shooter.Shooter;
 import frc.cotc.swerve.Swerve;
@@ -32,14 +33,20 @@ public class Autos {
   private final Supplier<Command> shootCommand, feedCommand, intakeCommand, aimCommand, stopCommand;
 
   private final Swerve swerve;
+  private final IntakePivot intakePivot;
 
   public Autos(
-      Swerve swerve, Shooter shooter, Supplier<Command> feedCommand, IntakeRoller intakeRoller) {
+      Swerve swerve,
+      Shooter shooter,
+      Supplier<Command> feedCommand,
+      IntakePivot intakePivot,
+      IntakeRoller intakeRoller) {
     chooser = new LoggedDashboardChooser<>("Auto Chooser");
     chooser.addDefaultOption(NONE_NAME, NONE_NAME);
     routines.put(NONE_NAME, Commands::none);
 
     this.swerve = swerve;
+    this.intakePivot = intakePivot;
     shootCommand = shooter::sotm;
     this.feedCommand = feedCommand;
     intakeCommand = intakeRoller::intake;
@@ -146,7 +153,7 @@ public class Autos {
         .onTrue(
             sequence(
                 trajectory.resetOdometry(),
-                trajectory.cmd(),
+                parallel(trajectory.cmd(), intakePivot.retract().withTimeout(0.4).asProxy()),
                 parallel(
                     aimCommand.get(),
                     shootCommand.get(),
