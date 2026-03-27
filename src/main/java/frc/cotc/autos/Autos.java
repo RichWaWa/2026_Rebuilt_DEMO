@@ -153,9 +153,7 @@ public class Autos {
         .onTrue(
             sequence(
                 trajectory.resetOdometry(),
-                sequence(
-                        trajectory.cmd(),
-                        swerve.pidToPose(trajectory.getFinalPose().orElseThrow()).withTimeout(1))
+                sequence(trajectory.cmd(), stopCommand.get().withTimeout(1))
                     .deadlineFor(intakePivot.retract().asProxy()),
                 parallel(
                     aimCommand.get(),
