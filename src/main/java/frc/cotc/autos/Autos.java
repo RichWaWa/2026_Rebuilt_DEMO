@@ -153,7 +153,7 @@ public class Autos {
         .onTrue(
             sequence(
                 trajectory.resetOdometry(),
-                parallel(trajectory.cmd(), intakePivot.retract().withTimeout(0.4).asProxy()),
+                trajectory.cmd().deadlineFor(intakePivot.retract().asProxy()),
                 parallel(
                     aimCommand.get(),
                     shootCommand.get(),

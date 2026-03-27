@@ -36,8 +36,8 @@
   "poses":{
    "CenterLeadOut":{
     "x":{
-     "exp":"CenterStartPose.x - 1 ft",
-     "val":3.3752
+     "exp":"CenterStartPose.x - 2 ft",
+     "val":3.0704
     },
     "y":{
      "exp":"FieldWidth / 2",
