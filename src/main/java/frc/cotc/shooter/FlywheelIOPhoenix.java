@@ -96,5 +96,6 @@ public class FlywheelIOPhoenix implements FlywheelIO {
   @Override
   public void stop() {
     motor0.setControl(stopRequest);
+    motor1.setControl(stopRequest);
   }
 }
