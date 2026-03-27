@@ -75,6 +75,7 @@ public class Shooter extends SubsystemBase {
         () -> {
           targetSpeedRotPerSec = 0;
           flywheelIO.stop();
+          hoodIO.stop();
         });
   }
 

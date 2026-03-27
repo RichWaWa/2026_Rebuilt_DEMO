@@ -20,4 +20,6 @@ public interface HoodIO {
   default void updateInputs(HoodIOInputs inputs) {}
 
   default void runPitch(double thetaRad) {}
+
+  default void stop() {}
 }
