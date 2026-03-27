@@ -153,7 +153,10 @@ public class Autos {
         .onTrue(
             sequence(
                 trajectory.resetOdometry(),
-                trajectory.cmd().deadlineFor(intakePivot.retract().asProxy()),
+                sequence(
+                        trajectory.cmd(),
+                        swerve.pidToPose(trajectory.getFinalPose().orElseThrow()).withTimeout(1))
+                    .deadlineFor(intakePivot.retract().asProxy()),
                 parallel(
                     aimCommand.get(),
                     shootCommand.get(),
