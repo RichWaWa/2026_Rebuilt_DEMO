@@ -25,7 +25,9 @@ public class RacewayIOPhoenix implements RacewayIO {
     var config = new TalonFXConfiguration();
 
     config.CurrentLimits.StatorCurrentLimitEnable = false;
-    config.CurrentLimits.SupplyCurrentLimit = 60;
+    config.CurrentLimits.SupplyCurrentLimit = 80;
+    config.CurrentLimits.SupplyCurrentLowerLimit = 60;
+    config.CurrentLimits.SupplyCurrentLowerTime = 0.25;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     motor.getConfigurator().apply(config);
 
