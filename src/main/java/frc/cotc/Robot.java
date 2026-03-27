@@ -238,7 +238,7 @@ public class Robot extends LoggedRobot {
           if (magnitude > 1e-6) {
             var normX = x / magnitude;
             var normY = y / magnitude;
-            var deadbandedMagnitude = MathUtil.applyDeadband(Math.min(magnitude, 1), 0.05);
+            var deadbandedMagnitude = MathUtil.applyDeadband(Math.min(magnitude, 1), 0.075);
             var squaredDeadbandedMagnitude = Math.pow(deadbandedMagnitude, 1.5);
             return new Translation2d(
                 normX * squaredDeadbandedMagnitude, normY * squaredDeadbandedMagnitude);
@@ -250,7 +250,7 @@ public class Robot extends LoggedRobot {
     DoubleSupplier omegaInputSupplier =
         () -> {
           var omega = -primary.getRightX();
-          var deadbandedOmegaMag = MathUtil.applyDeadband(Math.abs(omega), 0.05);
+          var deadbandedOmegaMag = MathUtil.applyDeadband(Math.abs(omega), 0.075);
           return omega * deadbandedOmegaMag * deadbandedOmegaMag;
         };
 
