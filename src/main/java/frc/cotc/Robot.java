@@ -368,14 +368,15 @@ public class Robot extends LoggedRobot {
     shiftInfo = Shifts.getOfficialShiftInfo();
     Logger.recordOutput("ShiftInfo/CurrentShift", shiftInfo.currentShift());
     Logger.recordOutput("ShiftInfo/Active", shiftInfo.active());
-    Logger.recordOutput("ShiftInfo/ElapsedTime", shiftInfo.elapsedTime());
-    Logger.recordOutput("ShiftInfo/RemainingTime", shiftInfo.remainingTime());
+    Logger.recordOutput("ShiftInfo/ElapsedTime", (int) Math.ceil(shiftInfo.elapsedTime()));
+    Logger.recordOutput("ShiftInfo/RemainingTime", (int) Math.ceil(shiftInfo.remainingTime()));
     var timeOfFlight =
         (shotTarget == SOTM.ShotTarget.BLUE_HUB || shotTarget == SOTM.ShotTarget.RED_HUB)
             ? result.timeOfFlightSeconds()
             : 0.7;
     var adjustedShiftInfo = Shifts.getAdjustedShiftInfo(timeOfFlight);
-    Logger.recordOutput("ShiftInfo/TimeLeftTillShooting", adjustedShiftInfo.remainingTime());
+    Logger.recordOutput(
+        "ShiftInfo/TimeLeftTillShooting", (int) Math.ceil(adjustedShiftInfo.remainingTime()));
     Logger.recordOutput(
         "ShiftInfo/OkayToShoot",
         adjustedShiftInfo.active()
