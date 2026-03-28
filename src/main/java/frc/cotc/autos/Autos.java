@@ -644,6 +644,7 @@ public class Autos {
     var trajectory0 = ChoreoTraj.RightBumpMid$0.asAutoTraj(routine);
     var trajectory1 = ChoreoTraj.RightBumpMid$1.asAutoTraj(routine);
     var trajectory2 = ChoreoTraj.RightBumpMid$2.asAutoTraj(routine);
+    var trajectory3 = ChoreoTraj.RightBumpMid$3.asAutoTraj(routine);
 
     routine
         .active()
@@ -654,9 +655,11 @@ public class Autos {
                 trajectory1.cmd().deadlineFor(intakeCommand.get()),
                 trajectory2.cmd(),
                 parallel(
-                    aimCommand.get(),
-                    shootCommand.get(),
-                    waitSeconds(1).andThen(feedCommand.get()))));
+                        aimCommand.get(),
+                        shootCommand.get(),
+                        waitSeconds(1).andThen(feedCommand.get()))
+                    .withTimeout(10),
+                trajectory3.cmd()));
 
     return routine.cmd();
   }
@@ -666,6 +669,7 @@ public class Autos {
     var trajectory0 = ChoreoTraj.LeftBumpMid$0.asAutoTraj(routine);
     var trajectory1 = ChoreoTraj.LeftBumpMid$1.asAutoTraj(routine);
     var trajectory2 = ChoreoTraj.LeftBumpMid$2.asAutoTraj(routine);
+    var trajectory3 = ChoreoTraj.LeftBumpMid$3.asAutoTraj(routine);
 
     routine
         .active()
@@ -676,9 +680,11 @@ public class Autos {
                 trajectory1.cmd().deadlineFor(intakeCommand.get()),
                 trajectory2.cmd(),
                 parallel(
-                    aimCommand.get(),
-                    shootCommand.get(),
-                    waitSeconds(1).andThen(feedCommand.get()))));
+                        aimCommand.get(),
+                        shootCommand.get(),
+                        waitSeconds(1).andThen(feedCommand.get()))
+                    .withTimeout(10),
+                trajectory3.cmd()));
 
     return routine.cmd();
   }
@@ -703,7 +709,7 @@ public class Autos {
                         aimCommand.get(),
                         shootCommand.get(),
                         waitSeconds(1).andThen(feedCommand.get()))
-                    .withTimeout(5),
+                    .withTimeout(8),
                 trajectory3.cmd(),
                 swerve.pidToPose(trajectory3.getFinalPose().orElseThrow()).withTimeout(3),
                 trajectory4.cmd(),
@@ -736,7 +742,7 @@ public class Autos {
                         aimCommand.get(),
                         shootCommand.get(),
                         waitSeconds(1).andThen(feedCommand.get()))
-                    .withTimeout(5),
+                    .withTimeout(8),
                 trajectory3.cmd(),
                 trajectory4.cmd().deadlineFor(intakeCommand.get()),
                 trajectory5.cmd(),
