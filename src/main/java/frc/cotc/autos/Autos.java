@@ -659,7 +659,8 @@ public class Autos {
                         shootCommand.get(),
                         waitSeconds(1).andThen(feedCommand.get()))
                     .withTimeout(10),
-                parallel(trajectory3.cmd(), intakeCommand.get())));
+                trajectory3.cmd().deadlineFor(intakeCommand.get()),
+                stopCommand.get()));
 
     return routine.cmd();
   }
@@ -684,7 +685,8 @@ public class Autos {
                         shootCommand.get(),
                         waitSeconds(1).andThen(feedCommand.get()))
                     .withTimeout(10),
-                parallel(trajectory3.cmd(), intakeCommand.get())));
+                trajectory3.cmd().deadlineFor(intakeCommand.get()),
+                stopCommand.get()));
 
     return routine.cmd();
   }
