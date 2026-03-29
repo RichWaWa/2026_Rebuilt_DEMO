@@ -188,7 +188,7 @@ public class Swerve extends SubsystemBase {
 
   private final SwerveRequest.FieldCentricFacingAngle fieldCentricFacingAngle =
       new SwerveRequest.FieldCentricFacingAngle()
-          .withHeadingPID(8, 0, 0)
+          .withHeadingPID(6, 0, 0.1)
           .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
 
   private Rotation2d lastHeading = Rotation2d.kZero;
@@ -322,6 +322,25 @@ public class Swerve extends SubsystemBase {
             .withSpeeds(targetSpeeds)
             .withWheelForceFeedforwardsX(sample.moduleForcesX())
             .withWheelForceFeedforwardsY(sample.moduleForcesY()));
+  }
+
+  public Command pidToPose(Pose2d targetPose) {
+    return run(
+        () -> {
+          var currentPose = getPose();
+
+          io.setControl(
+              m_pathApplyFieldSpeeds
+                  .withSpeeds(
+                      new ChassisSpeeds(
+                          pathXController.calculate(currentPose.getX(), targetPose.getX()),
+                          pathYController.calculate(currentPose.getY(), targetPose.getY()),
+                          pathThetaController.calculate(
+                              currentPose.getRotation().getRadians(),
+                              targetPose.getRotation().getRadians())))
+                  .withWheelForceFeedforwardsX(new double[4])
+                  .withWheelForceFeedforwardsY(new double[4]));
+        });
   }
 
   public Pose2d getPose() {

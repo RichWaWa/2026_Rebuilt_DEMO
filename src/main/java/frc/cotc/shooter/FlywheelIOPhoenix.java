@@ -9,8 +9,8 @@ package frc.cotc.shooter;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -29,7 +29,7 @@ public class FlywheelIOPhoenix implements FlywheelIO {
       motor1SupplyCurrent;
 
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
-  private final VoltageOut stopRequest = new VoltageOut(0);
+  private final CoastOut stopRequest = new CoastOut();
 
   public FlywheelIOPhoenix() {
     motor0 = new TalonFX(MOTOR_0_ID, Robot.rioBus);
@@ -73,7 +73,7 @@ public class FlywheelIOPhoenix implements FlywheelIO {
         motor0SupplyCurrent,
         motor1SupplyCurrent);
 
-    ParentDevice.optimizeBusUtilizationForAll();
+    ParentDevice.optimizeBusUtilizationForAll(5, motor0, motor1);
   }
 
   @Override
@@ -96,5 +96,6 @@ public class FlywheelIOPhoenix implements FlywheelIO {
   @Override
   public void stop() {
     motor0.setControl(stopRequest);
+    motor1.setControl(stopRequest);
   }
 }

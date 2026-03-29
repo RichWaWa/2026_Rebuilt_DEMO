@@ -36,8 +36,8 @@
   "poses":{
    "CenterLeadOut":{
     "x":{
-     "exp":"CenterStartPose.x - 1 ft",
-     "val":3.3752
+     "exp":"CenterStartPose.x - 2 ft",
+     "val":3.0704
     },
     "y":{
      "exp":"FieldWidth / 2",
@@ -492,12 +492,12 @@
    }
   },
   "mass":{
-   "exp":"144 lbs",
-   "val":65.31730128000001
+   "exp":"150 lbs",
+   "val":68.0388555
   },
   "inertia":{
-   "exp":"8 kg m ^ 2",
-   "val":8.0
+   "exp":"22 kg m ^ 2",
+   "val":22.0
   },
   "gearing":{
    "exp":"6.026785714285714",
@@ -512,8 +512,8 @@
    "val":471.23889803846896
   },
   "tmax":{
-   "exp":"1 N * m",
-   "val":1.0
+   "exp":"0.9 N * m",
+   "val":0.9
   },
   "cof":{
    "exp":"1.5",

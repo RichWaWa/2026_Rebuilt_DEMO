@@ -26,23 +26,24 @@ public class IntakeRollerIOPhoenix implements IntakeRollerIO {
     var config = new TalonFXConfiguration();
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.CurrentLimits.StatorCurrentLimitEnable = false;
-    config.CurrentLimits.SupplyCurrentLimit = 40;
+    config.CurrentLimits.SupplyCurrentLimit = 60;
     intakeMotor.getConfigurator().apply(config);
 
     statorSignal = intakeMotor.getStatorCurrent(false);
     supplySignal = intakeMotor.getSupplyCurrent(false);
     BaseStatusSignal.setUpdateFrequencyForAll(50, statorSignal, supplySignal);
     Robot.rioSignals.addSignals(statorSignal, supplySignal);
+    intakeMotor.optimizeBusUtilization(5);
   }
 
   @Override
   public void run() {
-    intakeMotor.setVoltage(INTAKE_DEFAULT_VOLTAGE);
+    intakeMotor.set(1);
   }
 
   @Override
   public void runReverse() {
-    intakeMotor.setVoltage(OUTAKE_DEFAULT_VOLTAGE);
+    intakeMotor.set(-1);
   }
 
   @Override

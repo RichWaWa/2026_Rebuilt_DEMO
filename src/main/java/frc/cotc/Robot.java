@@ -18,13 +18,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.cotc.autos.Autos;
@@ -143,7 +141,7 @@ public class Robot extends LoggedRobot {
             new AprilTagPoseEstimator("Left"),
             new AprilTagPoseEstimator("Back"),
             new AprilTagPoseEstimator("Right"));
-    var primary = new CommandXboxController(0);
+    var primary = new CommandXboxControllerWithRumble(0);
 
     var intakeRoller =
         new IntakeRoller(
@@ -213,6 +211,7 @@ public class Robot extends LoggedRobot {
                         intakePivot.agitate().asProxy(),
                         intakeRoller.intake())
                     .withName("Feed"),
+            intakePivot,
             intakeRoller);
     CommandScheduler.getInstance().schedule(autos.warmup());
 
@@ -240,7 +239,7 @@ public class Robot extends LoggedRobot {
           if (magnitude > 1e-6) {
             var normX = x / magnitude;
             var normY = y / magnitude;
-            var deadbandedMagnitude = MathUtil.applyDeadband(Math.min(magnitude, 1), 0.05);
+            var deadbandedMagnitude = MathUtil.applyDeadband(Math.min(magnitude, 1), 0.075);
             var squaredDeadbandedMagnitude = Math.pow(deadbandedMagnitude, 1.5);
             return new Translation2d(
                 normX * squaredDeadbandedMagnitude, normY * squaredDeadbandedMagnitude);
@@ -252,7 +251,7 @@ public class Robot extends LoggedRobot {
     DoubleSupplier omegaInputSupplier =
         () -> {
           var omega = -primary.getRightX();
-          var deadbandedOmegaMag = MathUtil.applyDeadband(Math.abs(omega), 0.05);
+          var deadbandedOmegaMag = MathUtil.applyDeadband(Math.abs(omega), 0.075);
           return omega * deadbandedOmegaMag * deadbandedOmegaMag;
         };
 
@@ -270,7 +269,7 @@ public class Robot extends LoggedRobot {
                   if (magnitude > 1e-6) {
                     var normX = x / magnitude;
                     var normY = y / magnitude;
-                    var deadbandedMagnitude = MathUtil.applyDeadband(Math.min(magnitude, 1), 0.05);
+                    var deadbandedMagnitude = MathUtil.applyDeadband(Math.min(magnitude, 1), 0.25);
                     var squaredDeadbandedMagnitude = deadbandedMagnitude * deadbandedMagnitude;
                     return new Translation2d(
                         normX * squaredDeadbandedMagnitude, normY * squaredDeadbandedMagnitude);
@@ -316,18 +315,18 @@ public class Robot extends LoggedRobot {
                     raceway.idle(),
                     turretFeeder.idle(),
                     swerve.fastTeleopDrive())
-                .withName("Boost"));
+                .withName("Boost"))
+        .onTrue(
+            sequence(
+                primary.rumble(0.2),
+                waitSeconds(0.1),
+                primary.rumble(0.2),
+                waitSeconds(0.1),
+                primary.rumble(0.2)));
 
     new Trigger(() -> shiftInfo != null && shiftInfo.remainingTime() < 5)
-        .onTrue(
-            run(() -> primary.setRumble(GenericHID.RumbleType.kBothRumble, 1))
-                .withTimeout(0.25)
-                .finallyDo(() -> primary.setRumble(GenericHID.RumbleType.kBothRumble, 0)));
-    new Trigger(() -> shiftInfo != null && shiftInfo.active())
-        .onChange(
-            run(() -> primary.setRumble(GenericHID.RumbleType.kBothRumble, 1))
-                .withTimeout(0.5)
-                .finallyDo(() -> primary.setRumble(GenericHID.RumbleType.kBothRumble, 0)));
+        .onTrue(primary.rumble(0.25));
+    new Trigger(() -> shiftInfo != null && shiftInfo.active()).onChange(primary.rumble(0.5));
   }
 
   @Override
@@ -345,8 +344,10 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     Threads.setCurrentThreadPriority(true, 1);
 
-    canivoreSignals.refreshAll();
-    rioSignals.refreshAll();
+    if (mode != Mode.REPLAY) {
+      canivoreSignals.refreshAll();
+      rioSignals.refreshAll();
+    }
     updateTarget();
     var fieldChassisSpeeds = swerve.getFieldSpeeds();
     var result =
@@ -367,14 +368,15 @@ public class Robot extends LoggedRobot {
     shiftInfo = Shifts.getOfficialShiftInfo();
     Logger.recordOutput("ShiftInfo/CurrentShift", shiftInfo.currentShift());
     Logger.recordOutput("ShiftInfo/Active", shiftInfo.active());
-    Logger.recordOutput("ShiftInfo/ElapsedTime", shiftInfo.elapsedTime());
-    Logger.recordOutput("ShiftInfo/RemainingTime", shiftInfo.remainingTime());
+    Logger.recordOutput("ShiftInfo/ElapsedTime", (int) Math.ceil(shiftInfo.elapsedTime()));
+    Logger.recordOutput("ShiftInfo/RemainingTime", (int) Math.ceil(shiftInfo.remainingTime()));
     var timeOfFlight =
         (shotTarget == SOTM.ShotTarget.BLUE_HUB || shotTarget == SOTM.ShotTarget.RED_HUB)
             ? result.timeOfFlightSeconds()
             : 0.7;
     var adjustedShiftInfo = Shifts.getAdjustedShiftInfo(timeOfFlight);
-    Logger.recordOutput("ShiftInfo/TimeLeftTillShooting", adjustedShiftInfo.remainingTime());
+    Logger.recordOutput(
+        "ShiftInfo/TimeLeftTillShooting", (int) Math.ceil(adjustedShiftInfo.remainingTime()));
     Logger.recordOutput(
         "ShiftInfo/OkayToShoot",
         adjustedShiftInfo.active()
@@ -396,7 +398,7 @@ public class Robot extends LoggedRobot {
     }
     SmartDashboard.putData(CommandScheduler.getInstance());
 
-    Threads.setCurrentThreadPriority(false, 10);
+    Threads.setCurrentThreadPriority(false, 1);
   }
 
   private void updateTarget() {

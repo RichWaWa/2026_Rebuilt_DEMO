@@ -25,7 +25,7 @@ public class RacewayIOPhoenix implements RacewayIO {
     var config = new TalonFXConfiguration();
 
     config.CurrentLimits.StatorCurrentLimitEnable = false;
-    config.CurrentLimits.SupplyCurrentLimit = 60;
+    config.CurrentLimits.SupplyCurrentLimit = 80;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     motor.getConfigurator().apply(config);
 
@@ -33,6 +33,7 @@ public class RacewayIOPhoenix implements RacewayIO {
     supplySignal = motor.getSupplyCurrent(false);
     BaseStatusSignal.setUpdateFrequencyForAll(50, statorSignal, supplySignal);
     Robot.rioSignals.addSignals(statorSignal, supplySignal);
+    motor.optimizeBusUtilization(5);
   }
 
   @Override

@@ -10,6 +10,7 @@ package frc.cotc.shooter;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -85,5 +86,12 @@ public class HoodIOPhoenix implements HoodIO {
   @Override
   public void runPitch(double thetaRad) {
     motor.setControl(controlSignal.withPosition(Units.radiansToRotations(offset - thetaRad)));
+  }
+
+  private final NeutralOut neutralOut = new NeutralOut();
+
+  @Override
+  public void stop() {
+    motor.setControl(neutralOut);
   }
 }
